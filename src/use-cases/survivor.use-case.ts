@@ -9,11 +9,23 @@ import prisma from "../shared/prisma";
 export class SurvivorUseCase {
   create = async (survivorDto: SurvivorDto) => {
     try {
+      const existingSurvivor = await prisma.survivor.findMany({
+        where: {
+          name: survivorDto.name,
+          age: survivorDto.age,
+          gender: survivorDto.gender,
+        },
+      });
+
+      if (existingSurvivor.length > 0) {
+        throw CustomError.conflict(
+          "A survivor already exists with the same details."
+        );
+      }
+
       const inventoryItems = this.transformInventory(
         survivorDto.inventory as InventoryItemProps[]
       );
-
-      console.log("Survivor use-cases", survivorDto);
 
       const inventory = await prisma.inventory.create({
         data: {
@@ -51,7 +63,8 @@ export class SurvivorUseCase {
         message: "Survivor created successfully.",
         payload: { survivor: survivor },
       };
-    } catch (error) {
+    } catch (err) {
+      if (err instanceof CustomError) return { error: err.message };
       throw CustomError.badRequest("Error creating survivor.");
     }
   };
@@ -72,16 +85,30 @@ export class SurvivorUseCase {
     id: GeneralIdDto,
     { lastLatitude, lastLongitude }: SurvivorDto
   ) => {
-    const updatedSurvivor = await prisma.survivor.update({
-      where: { id: id.id },
-      data: {
-        lastLatitude,
-        lastLongitude,
-      },
-    });
-    return {
-      message: "Location updated successfully.",
-      payload: { survivor: updatedSurvivor },
-    };
+    try {
+      const survivor = await prisma.survivor.findUnique({
+        where: { id: id.id },
+      });
+
+      if (!survivor) {
+        throw CustomError.notFound("Survivor not found.");
+      }
+
+      const updatedSurvivor = await prisma.survivor.update({
+        where: { id: id.id },
+        data: {
+          lastLatitude,
+          lastLongitude,
+        },
+      });
+
+      return {
+        message: "Location updated successfully.",
+        payload: { survivor: updatedSurvivor },
+      };
+    } catch (err) {
+      if (err instanceof CustomError) return { error: err.message };
+      throw CustomError.badRequest("Error updating location");
+    }
   };
 }

@@ -19,7 +19,6 @@ export class SurvivorController {
     const [error, survivorDto] = SurvivorDto.create(req.body);
 
     if (error) return res.status(400).json({ error });
-    console.log("Survivor dto en el controller", survivorDto);
 
     this.survivorUseCase
       .create(survivorDto!)
