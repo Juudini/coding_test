@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Survivor {
+  id            String    @id @default(uuid())
+  name          String
+  age           Int
+  gender        String
+  lastLatitude  String
+  lastLongitude String
+  isInfected    Boolean   @default(false)
+  inventory     Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId   String
+}
+
+// model Report {
+//   id         String   @id @default(uuid())
+//   reporter   Survivor @relation("Reporter", fields: [reporterId], references: [id])
+//   reporterId String
+//   reported   Survivor @relation("Reported", fields: [reportedId], references: [id])
+//   reportedId String
+//   createdAt  DateTime @default(now())
+
+//   @@unique([reporterId, reportedId])
+// }
+
+// Define the ItemType enum for the inventory items
+enum ItemType {
+  WATER
+  FOOD
+  MEDICATION
+  AMMUNITION
+}
+
+// Inventory model which can contain many InventoryItems
+model Inventory {
+  id       String          @id @default(uuid()) // Unique ID for the inventory
+  items    InventoryItem[] // One-to-many relationship with InventoryItems
+  Survivor Survivor[] // One-to-many relationship with Survivors (if necessary)
+}
+
+// InventoryItem model to store individual items in an inventory
+model InventoryItem {
+  id          String    @id @default(uuid()) // Unique ID for the inventory item
+  type        ItemType // Type of item (e.g., WATER, FOOD, etc.)
+  quantity    Int // The quantity of the item
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId String // Foreign key to the Inventory
+  // Foreign key to a Survivor (optional)
+}
+
+// model Trade {
+//   id         String      @id @default(uuid())
+//   sender     Survivor    @relation("TradeSender", fields: [senderId], references: [id])
+//   senderId   String
+//   receiver   Survivor    @relation("TradeReceiver", fields: [receiverId], references: [id])
+//   receiverId String
+//   items      TradeItem[]
+//   status     TradeStatus @default(PENDING)
+// }
+
+// model TradeItem {
+//   id       String    @id @default(uuid())
+//   trade    Trade     @relation(fields: [tradeId], references: [id])
+//   tradeId  String
+//   itemType ItemType
+//   quantity Int
+//   side     TradeSide
+// }
+
+// enum TradeStatus {
+//   PENDING
+//   COMPLETED
+//   REJECTED
+// }
+
+// enum TradeSide {
+//   SENDER
+//   RECEIVER
+// }
+
+// model Survivor {
+//   id             String          @id @default(uuid())
+//   name           String
+//   age            Int
+//   gender         String
+//   lastLatitude   String
+//   lastLongitude  String
+//   isInfected     Boolean         @default(false)
+//   reportsFiled   Report[]        @relation("Reporter")
+//   reportsAgainst Report[]        @relation("Reported")
+//   inventory      InventoryItem[]
+//   sentTrades     Trade[]         @relation("TradeSender")
+//   receivedTrades Trade[]         @relation("TradeReceiver")
+// }
+
+// model Report {
+//   id         String   @id @default(uuid())
+//   reporter   Survivor @relation("Reporter", fields: [reporterId], references: [id])
+//   reporterId String
+//   reported   Survivor @relation("Reported", fields: [reportedId], references: [id])
+//   reportedId String
+//   createdAt  DateTime @default(now())
+
+//   @@unique([reporterId, reportedId])
+// }
+
+// enum ItemType {
+//   WATER
+//   FOOD
+//   MEDICATION
+//   AMMUNITION
+// }
+
+// model InventoryItem {
+//   id         String   @id @default(uuid())
+//   type       ItemType
+//   quantity   Int      @default(1)
+//   survivor   Survivor @relation(fields: [survivorId], references: [id])
+//   survivorId String
+// }
+
+// model Trade {
+//   id         String      @id @default(uuid())
+//   sender     Survivor    @relation("TradeSender", fields: [senderId], references: [id])
+//   senderId   String
+//   receiver   Survivor    @relation("TradeReceiver", fields: [receiverId], references: [id])
+//   receiverId String
+//   items      TradeItem[]
+//   status     TradeStatus @default(PENDING)
+// }
+
+// model TradeItem {
+//   id       String    @id @default(uuid())
+//   trade    Trade     @relation(fields: [tradeId], references: [id])
+//   tradeId  String
+//   itemType ItemType
+//   quantity Int
+//   side     TradeSide
+// }
+
+// enum TradeStatus {
+//   PENDING
+//   COMPLETED
+//   REJECTED
+// }
+
+// enum TradeSide {
+//   SENDER
+//   RECEIVER
+// }
