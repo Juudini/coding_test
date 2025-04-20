@@ -1,4 +1,3 @@
-// import { GeneralIdDto } from "../dtos/general-id.dto";
 import { SurvivorDto } from "../dtos/survivor.dto";
 import { CustomError } from "../shared/custom-error";
 import { InventoryItemProps } from "../types/inventory-props";

@@ -11,7 +11,6 @@ const InventoryItemSchema = z.object({
     .max(1000, "Quantity must be at most 1000"),
 });
 
-// Esquema para el superviviente (Survivor)
 const SurvivorSchema = z
   .object({
     id: z
@@ -52,7 +51,6 @@ export class SurvivorDto {
   ) {}
 
   static create(object: { [key: string]: any }): [string?, SurvivorDto?] {
-    console.log("into SurvivorDto", object);
     const result = SurvivorSchema.safeParse(object);
 
     if (!result.success) {
