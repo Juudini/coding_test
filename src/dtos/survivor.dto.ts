@@ -7,7 +7,7 @@ const InventoryItemSchema = z.object({
   quantity: z
     .number()
     .int("Quantity must be an integer")
-    .positive("Quantity must be a positive integer")
+    .nonnegative("Quantity must be a positive integer or cero")
     .max(1000, "Quantity must be at most 1000"),
 });
 
@@ -31,8 +31,8 @@ const SurvivorSchema = z
       .string()
       .min(1, "Gender is required")
       .transform((val) => val.toLowerCase()),
-    lastLatitude: z.string(),
-    lastLongitude: z.string(),
+    lastLatitude: z.string().nonempty("Latitude is required"),
+    lastLongitude: z.string().nonempty("Longitude is required"),
     inventory: InventoryItemSchema.array(),
     isInfected: z.boolean().default(false).describe("Infection status"),
   })

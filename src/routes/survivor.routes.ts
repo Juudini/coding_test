@@ -6,8 +6,8 @@ export class SurvivorRoutes {
     const router = Router();
     const controller = new SurvivorController();
 
+    router.get("/", controller.getAllSurvivors);
     router.post("/", controller.createSurvivor as Application);
-
     router.patch(
       "/location/:survivorId",
       controller.updateSurvivorLocation as Application

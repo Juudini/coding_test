@@ -15,7 +15,8 @@ export class ReportController {
 
   reportInfection = (req: Request, res: Response) => {
     const [errorId, survivorIdDto] = GeneralIdDto.create(req.params.survivorId);
-
+    console.log("reportInfection", survivorIdDto);
+    console.log("reportInfection", req.params.survivorId);
     if (errorId) return res.status(400).json({ errorId });
 
     this.reportUseCase

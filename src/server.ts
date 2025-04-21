@@ -20,7 +20,7 @@ export class Server {
 
   async start() {
     /* ★━━━━━━━━━━━★ Middlewares ★━━━━━━━━━━━★ */
-    this.app.use(cors());
+    this.app.use(cors({ origin: "*" }));
     this.app.use(Express.json());
     this.app.use(Express.urlencoded({ extended: true }));
 

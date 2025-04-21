@@ -15,6 +15,13 @@ export class SurvivorController {
     return res.status(500).json({ error: "Something went wrong" });
   };
 
+  getAllSurvivors = (req: Request, res: Response) => {
+    this.survivorUseCase
+      .getAll()
+      .then((data) => res.json(data))
+      .catch((err) => this.handleError(err, res));
+  };
+
   createSurvivor = (req: Request, res: Response) => {
     const [error, survivorDto] = SurvivorDto.create(req.body);
 

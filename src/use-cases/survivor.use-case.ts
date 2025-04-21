@@ -6,6 +6,38 @@ import { GeneralIdDto } from "../dtos/general-id.dto";
 import prisma from "../shared/prisma";
 
 export class SurvivorUseCase {
+  getAll = async () => {
+    try {
+      const survivors = await prisma.survivor.findMany({
+        include: {
+          inventory: {
+            include: {
+              items: true,
+            },
+          },
+          Report: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      const survivorsWithReportCount = survivors.map((survivor) => ({
+        ...survivor,
+        reportCount: survivor.Report.length,
+      }));
+
+      return {
+        message: "Survivors retrieved successfully.",
+        payload: { survivors: survivorsWithReportCount },
+      };
+    } catch (err) {
+      if (err instanceof CustomError) return { error: err.message };
+      throw CustomError.badRequest("Error retrieving survivors.");
+    }
+  };
+
   create = async (survivorDto: SurvivorDto) => {
     try {
       const existingSurvivor = await prisma.survivor.findMany({
