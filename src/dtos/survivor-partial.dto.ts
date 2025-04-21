@@ -18,8 +18,6 @@ export class SurvivorPartialDto implements Partial<SurvivorProps> {
   static create(
     partialData: Partial<SurvivorPartialDto>
   ): [string?, SurvivorPartialDto?] {
-    console.log("into SurvivorPartialDto", partialData);
-
     return [undefined, new SurvivorPartialDto(partialData)];
   }
 }
